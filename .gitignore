@@ -1,3 +1,7 @@
 /dataset
 proyecto_integrador.zip
 olist.db
+.pytest_cache
+/src/__pycache__/
+/tests/__pycache__/
+proyecto_integrador_2.zip
