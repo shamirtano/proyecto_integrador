@@ -1,8 +1,21 @@
+version: '3.8'
+
 services:
-  dashboard:
-    build: ./dashboard
-    image: olist-dashboard
-    ports:
-      - "8501:8501"
+  airflow:
+    image: apache/airflow:2.5.1
     volumes:
-      - ./data:/app/data
+      - ./dags:/opt/airflow/dags
+      - ./data:/opt/airflow/data  # Persistencia para SQLite
+      - ./src:/opt/airflow/src
+    environment:
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: 'sqlite:////opt/airflow/data/airflow.db'
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    ports:
+      - "8080:8080"
+    command: >
+      bash -c "
+        airflow db init &&
+        airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com &&
+        airflow scheduler &
+        airflow webserver
+      "
